@@ -1,0 +1,170 @@
+from flask import Flask,request,render_template, url_for
+from flaskext.mysql import MySQL
+
+app=Flask(__name__)
+app.config['MYSQL_DATABASE_HOST'] = 'capsinfirst.ckzc9c4vvmcm.eu-central-1.rds.amazonaws.com'
+app.config['MYSQL_DATABASE_USER'] = 'CapsinFirst'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'capsinfirst'
+app.config['MYSQL_DATABASE_DB'] = 'CapsinFirst'
+
+mysql = MySQL()
+mysql.init_app(app)
+
+@app.route('/')
+def login():
+    return render_template('login.html')
+
+@app.route('/main', methods = ['POST', 'GET'])
+def main_page():
+    if request.method == 'POST':
+        id = request.form['loginid']
+        pw = request.form['password']
+    return render_template('main.html', loginid=id, password=pw)
+
+@app.route('/chart.html')
+def chart1():
+    return render_template('chart.html')
+
+@app.route('/chart2.html')
+def chart2():
+    return render_template('chart2.html')
+
+@app.route('/chart3.html')
+def chart3():
+    legend = 'Monthly Data'
+    labels = ["January", "February", "March", "April", "May", "June", "July", "August"]
+    values = [10, 9, 8, 7, 6, 4, 7, 8]
+    return render_template('chart3.html', values=values, labels=labels, legend=legend)
+
+@app.route('/chart4.html')
+def index():
+	cur = mysql.get_db().cursor()
+	cur1 = mysql.get_db().cursor()
+	cur.execute('SELECT Temp, M, Flag FROM CapsinFirst where code = 300 ORDER BY Mon desc, D desc, H desc, M desc LIMIT 10')
+	cur1.execute('SELECT TEMP, M, Flag FROM CapsinFirst where code = 500 ORDER BY Mon desc, D desc, H desc, M desc LIMIT 10')
+	rv =cur.fetchall()
+        rv1 = cur1.fetchall()
+
+	timelist=[]
+	templist=[]
+	flaglist=[]
+	
+	timelist1=[]
+	templist1=[]
+	flaglist1=[]
+
+	i=0
+	j=0
+
+        for row in rv:
+           data1  = row[0]
+	   data2  = row[1]
+	   data3  = row[2] 
+	   i=i+1
+           flaglist.append(data3)
+	   templist.append(data1)
+	   timelist.append(data2)
+           templists = templist[::-1]
+	   timelists = timelist[::-1]
+
+	for row in rv1:
+	   data1 = row[0]
+	   data2 = row[1]
+	   data3 = row[2]
+ 	   j=j+1
+ 	   flaglist1.append(data3)
+           templist1.append(data1)
+           timelist1.append(data2)
+           templists1 = templist1[::-1]
+           timelists1 = timelist1[::-1]
+
+
+	legend = 'Temperatures'
+	return render_template('chart4.html', values=templists, labels=timelists, legend=legend, flag=flaglist, values1=templists1, labels1=timelists1, flag1=flaglist1)
+
+@app.route('/checksen.html')
+def checksen():
+
+	cur = mysql.get_db().cursor()
+	cur.execute('SELECT DISTINCT Code, Mon, D, H, M FROM CapsinFirst ORDER BY Mon desc, D desc, H desc, M desc LIMIT 70')
+	rv =cur.fetchall()
+
+	Codelist=[]
+	Monlist=[]
+	Dlist=[]
+	Hlist=[]
+	Mlist=[]
+
+	i=0
+
+        for row in rv:
+           data1  = row[0]
+	   data2  = row[1]
+	   data3  = row[2]
+	   data4  = row[3]
+	   data5  = row[4] 
+	   i=i+1
+           Codelist.append(data1)
+	   Monlist.append(data2*1000000+data3*10000+data4*100+data5)
+	   Dlist.append(data3)
+           Hlist.append(data4)
+	   Mlist.append(data5)
+	   setCode=set(Codelist)
+	   uniqueMon=list(setCode)
+	print uniqueMon
+
+	for i in uniqueMon:
+		print Codelist.index(i)
+
+
+
+
+
+	return render_template('checksen.html', Code=Codelist, Month=Monlist, Day=Dlist, Hour=Hlist,Min=Mlist)
+
+
+@app.route('/result',methods = ['POST', 'GET'])
+def result():
+   if request.method == 'POST':
+      result = request.form
+      return render_template("result.html",result = result)
+
+'''
+@app.route('/login_inspect', methods=['post','get'])
+def login():
+    error = None
+    if request.method == 'POST':
+
+        email = request.form['email']
+        pw = request.form['pw']
+        
+        conn = mysql.connect(host='capsinfirst.ckzc9c4vvmcm.eu-central-1.rds.amazonaws.com', user='Capsin', passwd='capsin', db='temp', charset='utf8')
+        cursor = conn.cursor()
+         
+        query = "SELECT * FROM temp"
+        value = (email, pw)
+        cursor.execute("set names utf8")
+        cursor.execute(query, value)
+        data = (cursor.fetchall())
+        
+        cursor.close()
+        conn.close()
+        
+        for row in data:
+            data = row[0]
+
+        if data:
+            print 'login success'
+            return redirect(url_for('success', name=data))
+        else:
+            error = 'Invalid input data detected!'
+            
+        #return redirect(url_for('success', name=user))
+    
+    return render_template('check.html', error=error)
+'''
+
+
+if __name__=='__main__':
+	app.run(host = '0.0.0.0', port = 5000, debug=True)
+

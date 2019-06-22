@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>구역 리스트</title>
+	<style>
+		html, body{
+			margin: 0; padding: p; height: 100%;}
+		h1{
+			text-align: center;
+			vertical-align: middle;
+			padding-top: 25px;}
+		h2{
+			text-align: center;}
+		.header{
+			width: 100%; height: 100px; background: #2d2d2d; color: white;}
+		.nav{
+			width: 15%; height: 2000px; float:left; background: #3d3d3d; padding-left: 0px;}
+		.section{
+			width: 85%; height: 2000px; float:left;}
+		.footer{
+			width: 100%; height: 50px; clear:both;}
+		.nav ul li{
+			list-style: none;
+      			color: white;
+      			background-color: #2d2d2d;
+      			line-height: 50px;
+      			vertical-align: middle;
+      			text-align: center;}
+		.nav form{
+			padding-left: 40px;}
+		.nav input{
+			vertical-align: middle;}
+		.nav .menu{
+			text-decoration: none;
+    			color: white;
+    			display: block;
+    			width: 100%;
+    			font-size: 13px;
+    			font-weight: bold;
+    			font-family: "Trebuchet MS", Dotum, Arial;}
+	    	.nav .menu:hover{
+    			color:red;
+    			background-color: #4d4d4d;}
+	</style>
+</head>
+<body>
+	<p style="margin-top:0px;">
+	{% if loginid == 'capsin'%}
+		<header class = "header">
+			<h1 style="margin-top: 0px;">온도측정센서 무선 모니터링 시스템</h1>
+		</header>
+		<nav class = "nav">
+			<h2 style="color: white;">- Area List</h2>
+			<ul style = "padding-left:0px">
+				<li><a class = "menu" href="chart.html" target="right">AREA A</li>
+				<li><a class = "menu" href="chart2.html" target="right">AREA B</li>
+				<li><a class = "menu" href="chart3.html" target="right">AREA C</li>
+				<li><a class = "menu" href="chart4.html" target="right">AREA D</li>
+				<li><a class = "menu" href="checksen.html" target="right">Check State</a>
+			</ul>
+
+			&nbsp;
+			&nbsp;
+			&nbsp;
+
+			<h2 style="color: white;">- Machine List</h2>
+			<ul style = "padding-left:0px">
+				<li><a class = "menu" href="chartselect.html" target="right">장치1</li>
+				<li><a class = "menu" href="chartselect2.html" target="right">장치2</li>
+				<li><a class = "menu" href="chartselect3.html" target="right">장치3</li></a>
+			</ul>
+			&nbsp;
+			<h2 style="color: white;" padding-left="30px">- Date Range</h2>
+			<form action = "{{url_for('dataselect')}}" method="post" style="color: white;" "padding-left:30px;">
+				10개: <input type="radio" name="rangeid"  value=10 checked>
+				20개:<input type="radio" name="rangeid"  value=20>
+				30개:<input type="radio" name="rangeid"  value=30>
+                                <button type="submit">선택</button>
+			</form>
+		</nav>
+		<section class = "section">
+			<iframe src="chart.html" name="right" style="width:100%" height="2000"></iframe>
+		</section>
+		<footer class = "footer">
+
+		</footer>
+	{% else %}
+		<form action="{{url_for('login')}}">
+			<h2>사용자 정보가 잘못되었습니다.</h2><br>
+			<input type="submit" value="돌아가기">
+		</form>
+	{% endif %}
+	</p>
+</body>
+</html>

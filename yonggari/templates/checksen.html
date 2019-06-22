@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Checksenser</title>
+</head>
+<body>
+	<font size="10">
+	<table border =1 width='100%'  align="center">
+		<tr>
+		{% for value in Code %}
+			<td>{{value}}</td>
+		{% endfor %}
+		</tr>
+		<tr>
+		{% for value in Time %}
+			<td>{{value}}</td>
+		{% endfor %}
+		</tr>
+		<tr>
+		{% for value in Errornode %}
+			<td>{{value}}</td>
+		{% endfor %}
+		</tr>
+		
+
+	</table>
+	</font>
+
+</body>
+</html>

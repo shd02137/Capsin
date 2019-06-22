@@ -1,0 +1,315 @@
+<head>
+	<meta charset="utf-8" />
+	<title>AWS DB data</title>
+	<!-- import plugin script -->
+	<script src='static/Chart.min.js'></script>
+	<style>
+		h2{
+			text-align: center;
+		}
+	</style>
+</head>
+
+<h2>Area A 장치목록</h2>
+<hr>
+<h2><b>-장치1</b></h2>
+
+<!-- bar chart canvas element -->
+<canvas id="myChart" width="2000" height="500"></canvas>
+<script>
+	Chart.defaults.global.responsive = false;
+	Chart.pluginService.register({
+	beforeDraw: function (chart, easing) {
+		if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+			var helpers = Chart.helpers;
+			var ctx = chart.chart.ctx;
+			var chartArea = chart.chartArea;
+
+			ctx.save();
+			ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+			ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+			ctx.restore();
+ 		}
+ 	}
+	});
+
+	var label = [{%for item in labels%} "{{item}}", {%endfor%}];
+	val labelsplice10 = label.splice(0,10);
+	val labelsplice20 = label.splice(0,20);
+	val labelsplice30 = label.splice(0,30);
+
+	val data = [{%for item in values%} "{{item}}", {%endfor%}];
+	val data10 = data.splice(0,10);
+	val data20 = data.splice(0,20);
+	val data30 = data.splice(0,30);
+
+	// define the chart data
+	{%if limits == '10'%}
+	{%if flag[0] == 0%}
+		var chartData = {
+  		labels : [labelsplice10],
+  		
+		datasets : [{
+		label: '{{ legend }}',
+		fill: true,
+      		lineTension: 0.1,
+		backgroundColor: "rgba(75,192,192,0.4)",
+		borderColor: "rgba(75,192,192,1)",
+		pointBorderColor: "rgba(75, 192, 192, 1)",
+		pointHoverBackgroundColor: "rgba(75,192,192,1)",
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		pointBackgroundColor: "#fff",
+		pointBorderWidth: 1,
+		pointHoverRadius: 5,
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+		pointHoverBorderWidth: 2,
+		pointRadius: 1,
+		pointHitRadius: 10,
+		
+		data : [data10],
+		spanGaps: false
+		}]
+	}
+	{%else%}
+		var chartData = {
+                labels : [{% for item in labels %}
+                "{{item}}",
+                {% endfor %}],
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(255,0,0,0.4)",
+                borderColor: "rgba(255,0,0,1)",
+                pointBorderColor: "rgba(255,0,0,1)",
+                pointHoverBackgroundColor: "rgba(255,0,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+		
+		data : [{% for item in values %}
+                        {{item}},
+                        {% endfor %}],
+                spanGaps: false
+                }]
+        }
+	{%endif%}
+	{%endif%}
+
+	{%if limits == '20'%}
+        {%if flag[0] == 0%}
+                var chartData = {
+                labels : labelsplice20,
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                pointBorderColor: "rgba(75, 192, 192, 1)",
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+
+                data : data20,
+                spanGaps: false
+                }]
+        }
+	{%else%}
+                var chartData = {
+                labels : [{% for item in labels %}
+                "{{item}}",
+                {% endfor %}],
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(255,0,0,0.4)",
+                borderColor: "rgba(255,0,0,1)",
+                pointBorderColor: "rgba(255,0,0,1)",
+                pointHoverBackgroundColor: "rgba(255,0,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+
+                data : [{% for item in values %}
+                        {{item}},
+                        {% endfor %}],
+                spanGaps: false
+                }]
+        }
+        {%endif%}
+	{%endif%}
+
+	// get chart canvas
+	var ctx = document.getElementById("myChart").getContext("2d");
+	var holder = document.getElementById("myChart");
+
+	// create the chart using the chart canvas
+	var myChart = new Chart(ctx, {
+	type: 'line',
+	data: chartData,
+	options: {
+		tooltips: {
+			enabled: true,
+			mode: 'single',
+			callbacks: {
+				label: function(tooltipItems, data) {
+					return tooltipItems.yLabel + ' degrees';
+				}
+			}
+		},
+	}
+	});
+	var pointSelected = document.getElementById("pointSelected");
+	holder.onclick = function(evt){
+		var activePoint = myChart.getElementAtEvent(evt);
+		pointSelected.innerHTML = 'Point selected... index: ' + activePoint[0]._index;
+	};
+</script>
+
+<h2><b>-장치2</b></h2>
+
+<!-- bar chart canvas element -->
+<canvas id="myChart2" width="2000" height="500"></canvas>
+<script>
+        Chart.defaults.global.responsive = false;
+        Chart.pluginService.register({
+        beforeDraw: function (chart, easing) {
+                if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+                        var helpers = Chart.helpers;
+                        var ctx = chart.chart.ctx;
+                        var chartArea = chart.chartArea;
+
+                        ctx.save();
+                        ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+                        ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bott$
+                        ctx.restore();
+                }
+        }
+        });
+
+        // define the chart data
+	{%if flag[0]  == 0%}
+                var chartData = {
+                labels : [{% for item in labels2 %}
+                "{{item}}",
+                {% endfor %}],
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                pointBorderColor: "rgba(75, 192, 192, 1)",
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+
+                data : [{% for item in values2 %}
+                        {{item}},
+                        {% endfor %}],
+                spanGaps: false
+                }]
+        }
+        {%else%}
+                var chartData = {
+                labels : [{% for item in labels2 %}
+                "{{item}}",
+                {% endfor %}],
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(255,0,0,0.4)",
+                borderColor: "rgba(255,0,0,1)",
+                pointBorderColor: "rgba(255,0,0,1)",
+                pointHoverBackgroundColor: "rgba(255,0,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+		pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+
+                data : [{% for item in values2 %}
+                        {{item}},
+                        {% endfor %}],
+                spanGaps: false
+                }]
+        }
+        {%endif%}
+
+        // get chart canvas
+        var ctx = document.getElementById("myChart2").getContext("2d");
+        var holder = document.getElementById("myChart2");
+
+        // create the chart using the chart canvas
+        var myChart2 = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+                tooltips: {
+                        enabled: true,
+                        mode: 'single',
+                        callbacks: {
+                                label: function(tooltipItems, data) {
+                                        return tooltipItems.yLabel + ' degrees';
+                                }
+                        }
+                },
+        }
+        });
+        var pointSelected = document.getElementById("pointSelected");
+        holder.onclick = function(evt){
+                var activePoint = myChart2.getElementAtEvent(evt);
+                pointSelected.innerHTML = 'Point selected... index: ' + activePoint[0]._index;
+        };
+</script>

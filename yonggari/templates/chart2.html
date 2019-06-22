@@ -1,0 +1,275 @@
+<head>
+  <meta charset="utf-8" />
+  <title>Area B Machine</title>
+  <!-- import plugin script -->
+  <script src='static/Chart.min.js'></script>
+  <style>
+      h2
+      {
+	text-align:center;
+      }
+  </style>
+</head>
+<h2><style="text-align:center">Area B 장치목록</h2>
+<hr>
+<h2><b>-장치3</b></h2>
+
+<!-- bar chart canvas element -->
+<canvas id="myChart" width="2000" height="500"></canvas>
+<script>
+        Chart.defaults.global.responsive = false;
+        Chart.pluginService.register({
+        beforeDraw: function (chart, easing) {
+                if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+                        var helpers = Chart.helpers;
+                        var ctx = chart.chart.ctx;
+                        var chartArea = chart.chartArea;
+
+                        ctx.save();
+                        ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+                        ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                        ctx.restore();
+                }
+        }
+        });
+
+        // define the chart data
+        {%if flag[0] == 0%}
+                var chartData = {
+                labels : [{% for item in labels %}
+                "{{item}}",
+                {% endfor %}],
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                pointBorderColor: "rgba(75, 192, 192, 1)",
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+		pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+
+                data : [{% for item in values %}
+                        {{item}},
+                        {% endfor %}],
+                spanGaps: false
+                }]
+        }
+        {%else%}
+                var chartData = {
+                labels : [{% for item in labels %}
+                "{{item}}",
+                {% endfor %}],
+
+                datasets : [{
+                label: '{{ legend }}',
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(255,0,0,0.4)",
+                borderColor: "rgba(255,0,0,1)",
+                pointBorderColor: "rgba(255,0,0,1)",
+                pointHoverBackgroundColor: "rgba(255,0,0,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+
+                data : [{% for item in values %}
+                        {{item}},
+                        {% endfor %}],
+                spanGaps: false
+                }]
+        }
+        {%endif%}
+
+// get chart canvas
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var holder = document.getElementById("myChart");
+
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+                tooltips: {
+                        enabled: true,
+                        mode: 'single',
+                        callbacks: {
+                                label: function(tooltipItems, data) {
+                                        return tooltipItems.yLabel + ' degrees';
+                                }
+                        }
+                },
+        }
+        });
+        var pointSelected = document.getElementById("pointSelected");
+        holder.onclick = function(evt){
+                var activePoint = myChart.getElementAtEvent(evt);
+                pointSelected.innerHTML = 'Point selected... index: ' + activePoint[0]._index;
+        };
+</script>
+
+<h2><b>-장치4</b></h2>
+<!-- bar chart canvas element -->
+<canvas id="myChart2" width="2000" height="500"></canvas>
+<script>
+	// Global parameters:
+	// do not resize the chart canvas when its container does (keep at 600x400px)
+	Chart.defaults.global.responsive = false;
+ 
+	// define the chart data
+	var chartData = {
+  	labels : ['12:00PM', '12:10PM', '12:20PM', '12:30PM', '12:40PM', '12:50PM',
+             '1:00PM', '1:10PM', '1:20PM', '1:30PM', '1:40PM', '1:50PM',
+             '2:00PM', '2:10PM', '2:20PM', '2:30PM', '2:40PM', '2:50PM'],
+  	datasets : [{
+      label: 'Temperatures',
+      fill: true,
+      lineTension: 0.1,
+      backgroundColor: "rgba(255,0,0,0.4)",
+      borderColor: "rgba(255,0,0,1)",
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "rgba(255,0,0,1)",
+      pointBackgroundColor: "#fff",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgba(255,0,0,1)",
+      pointHoverBorderColor: "rgba(220,220,220,1)",
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data : [71.7, 71.5, 71.6, 71.4, 71.5, 71.3,
+                    71.4, 71.5, 71.5, 71.6, 71.5, 71.7,
+                    71.6, 71.5, 71.5, 71.4, 71.5, 81.1],
+      spanGaps: false
+ 	 }]
+	}
+ 
+// get chart canvas
+var ctx = document.getElementById("myChart2").getContext("2d");
+ 
+// create the chart using the chart canvas
+var myChart2 = new Chart(ctx, {
+  type: 'line',
+  data: chartData,
+});
+</script>
+
+<hr>
+<h2><b>-장치5</b></h2>
+<canvas id="myChart3" width="2000" height="500"></canvas>
+<script>
+  // Global parameters:
+  // do not resize the chart canvas when its container does (keep at 600x400px)
+  Chart.defaults.global.responsive = false;
+ 
+  // define the chart data
+  var chartData = {
+    labels : ['12:00PM', '12:10PM', '12:20PM', '12:30PM', '12:40PM', '12:50PM',
+             '1:00PM', '1:10PM', '1:20PM', '1:30PM', '1:40PM', '1:50PM',
+             '2:00PM', '2:10PM', '2:20PM', '2:30PM', '2:40PM', '2:50PM'],
+    datasets : [{
+      label: 'Temperatures',
+      fill: true,
+      lineTension: 0.1,
+      backgroundColor: "rgba(75,192,192,0.4)",
+      borderColor: "rgba(75,192,192,1)",
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "rgba(75,192,192,1)",
+      pointBackgroundColor: "#fff",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgba(75,192,192,1)",
+      pointHoverBorderColor: "rgba(220,220,220,1)",
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data : [30.5, 38.4, 43.8, 47.8, 53.7, 53.2,
+                    53.8, 53.7, 53.2, 53.3, 53.5, 53.7,
+                    53.2, 53.4, 53.2, 53.9, 53.3, 53.1],
+      spanGaps: false
+   }]
+  }
+ 
+// get chart canvas
+var ctx = document.getElementById("myChart3").getContext("2d");
+ 
+// create the chart using the chart canvas
+var myChart3 = new Chart(ctx, {
+  type: 'line',
+  data: chartData,
+});
+</script>
+
+<hr>
+<h2><b>-장치6</b></h2>
+<canvas id="myChart4" width="2000" height="500"></canvas>
+<script>
+  // Global parameters:
+  // do not resize the chart canvas when its container does (keep at 600x400px)
+  Chart.defaults.global.responsive = false;
+ 
+  // define the chart data
+  var chartData = {
+    labels : ['12:00PM', '12:10PM', '12:20PM', '12:30PM', '12:40PM', '12:50PM',
+             '1:00PM', '1:10PM', '1:20PM', '1:30PM', '1:40PM', '1:50PM',
+             '2:00PM', '2:10PM', '2:20PM', '2:30PM', '2:40PM', '2:50PM'],
+    datasets : [{
+      label: 'Temperatures',
+      fill: true,
+      lineTension: 0.1,
+      backgroundColor: "rgba(75,192,192,0.4)",
+      borderColor: "rgba(75,192,192,1)",
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "rgba(75,192,192,1)",
+      pointBackgroundColor: "#fff",
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgba(75,192,192,1)",
+      pointHoverBorderColor: "rgba(220,220,220,1)",
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data : [30.3, 30.5, 31, 30.4, 30.5, 30.5,
+                    30.6, 30.5, 30.5, 30.6, 30.4, 30.3,
+                    30.4, 30.5, 30.5, 30.5, 30.4, 0],
+      spanGaps: false
+   }]
+  }
+ 
+// get chart canvas
+var ctx = document.getElementById("myChart4").getContext("2d");
+ 
+// create the chart using the chart canvas
+var myChart4 = new Chart(ctx, {
+  type: 'line',
+  data: chartData,
+});
+</script>
